@@ -1,12 +1,17 @@
 package org.mmm.anothermaliciousapp;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,6 +26,7 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity {
 
     private static final int CODE_DRAW_OVER_OTHER_APP_PERMISSION = 2084;
+    CheckBox tapjacking3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +48,20 @@ public class MainActivity extends AppCompatActivity {
         registerStart((CheckBox) findViewById(R.id.tapjacking1Checkbox), TapjackingService.class);
         registerStart((CheckBox) findViewById(R.id.tapjacking2Checkbox), Tapjacking2Service.class);
 
+        tapjacking3 = (CheckBox) findViewById(R.id.tapjacking3Checkbox);
+        tapjacking3.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b && ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_CONTACTS)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    startService(new Intent(MainActivity.this, Tapjacking3Service.class));
+                    ActivityCompat.requestPermissions(MainActivity.this, new String[] { Manifest.permission.READ_CONTACTS }, 123);
+                } else if (!b) {
+                    stopService(new Intent(MainActivity.this, Tapjacking3Service.class));
+                }
+            }
+        });
+
         BroadcastReceiver receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -52,6 +72,12 @@ public class MainActivity extends AppCompatActivity {
         };
 
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter("MAIN"));
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        tapjacking3.setChecked(false);
     }
 
     private void registerStart(final CheckBox checkbox, final Class service) {

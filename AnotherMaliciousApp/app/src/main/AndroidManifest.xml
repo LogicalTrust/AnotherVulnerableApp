@@ -3,6 +3,7 @@
     package="org.mmm.anothermaliciousapp">
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <application
         android:allowBackup="true"
@@ -25,6 +26,10 @@
             android:exported="true" />
         <service
             android:name=".Tapjacking2Service"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name=".Tapjacking3Service"
             android:enabled="true"
             android:exported="true"></service>
     </application>
