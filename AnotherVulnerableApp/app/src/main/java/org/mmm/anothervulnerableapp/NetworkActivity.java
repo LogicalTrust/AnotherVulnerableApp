@@ -26,14 +26,14 @@ import okhttp3.Response;
 public class NetworkActivity extends AppCompatActivity {
 
     private WebView webView;
-    private OkHttpClient client;
+    private static final String HOST = "example.com";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_network);
-        client = new OkHttpClient();
         webView = (WebView) findViewById(R.id.webView);
+        final OkHttpClient client = new OkHttpClient();
         final OkHttpClient clientNoCert = disableCertVerification(new OkHttpClient.Builder()).build();
         final OkHttpClient clientCertPinning = enableCertPinning(new OkHttpClient.Builder()).build();
 
@@ -41,28 +41,28 @@ public class NetworkActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 updateWebView("");
-                new MyTask(client).execute("http://example.com");
+                new MyTask(client).execute("http://" + HOST);
             }
         });
         ((Button) findViewById(R.id.httpsNoCertButton)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 updateWebView("");
-                new MyTask(clientNoCert).execute("https://example.com");
+                new MyTask(clientNoCert).execute("https://" + HOST);
             }
         });
         ((Button) findViewById(R.id.httpsButton)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 updateWebView("");
-                new MyTask(client).execute("https://example.com");
+                new MyTask(client).execute("https://" + HOST);
             }
         });
         ((Button) findViewById(R.id.certPinningButton)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 updateWebView("");
-                new MyTask(clientCertPinning).execute("https://example.com");
+                new MyTask(clientCertPinning).execute("https://" + HOST);
             }
         });
     }
@@ -74,7 +74,7 @@ public class NetworkActivity extends AppCompatActivity {
     private static OkHttpClient.Builder enableCertPinning(OkHttpClient.Builder builder) {
         CertificatePinner certificatePinner = new CertificatePinner
                 .Builder()
-                .add("example.com", "sha256/xmvvalwaPni4IBbhPzFPPMX6JbHlKqua257FmJsWWto=")
+                .add(HOST, "sha256/xmvvalwaPni4IBbhPzFPPMX6JbHlKqua257FmJsWWto=")
                 .build();
         builder.certificatePinner(certificatePinner);
         return builder;
