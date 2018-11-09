@@ -9,7 +9,16 @@ import android.webkit.WebView;
 import android.widget.Button;
 
 import java.io.IOException;
+import java.security.cert.CertificateException;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
+import okhttp3.CertificatePinner;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -25,26 +34,84 @@ public class NetworkActivity extends AppCompatActivity {
         setContentView(R.layout.activity_network);
         client = new OkHttpClient();
         webView = (WebView) findViewById(R.id.webView);
+        final OkHttpClient clientNoCert = disableCertVerification(new OkHttpClient.Builder()).build();
+        final OkHttpClient clientCertPinning = enableCertPinning(new OkHttpClient.Builder()).build();
 
         ((Button) findViewById(R.id.httpButton)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 updateWebView("");
-                new MyTask().execute("http://example.com");
+                new MyTask(client).execute("http://example.com");
             }
         });
-        Button httpsNoCertButton = (Button) findViewById(R.id.httpsNoCertButton);
+        ((Button) findViewById(R.id.httpsNoCertButton)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateWebView("");
+                new MyTask(clientNoCert).execute("https://example.com");
+            }
+        });
         ((Button) findViewById(R.id.httpsButton)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new MyTask().execute("https://example.com");
+                updateWebView("");
+                new MyTask(client).execute("https://example.com");
             }
         });
-        Button certPinningButton = (Button) findViewById(R.id.certPinningButton);
+        ((Button) findViewById(R.id.certPinningButton)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateWebView("");
+                new MyTask(clientCertPinning).execute("https://example.com");
+            }
+        });
     }
 
     private void updateWebView(final String html) {
         webView.loadData(html, null, null);
+    }
+
+    private static OkHttpClient.Builder enableCertPinning(OkHttpClient.Builder builder) {
+        CertificatePinner certificatePinner = new CertificatePinner
+                .Builder()
+                .add("example.com", "sha256/xmvvalwaPni4IBbhPzFPPMX6JbHlKqua257FmJsWWto=")
+                .build();
+        builder.certificatePinner(certificatePinner);
+        return builder;
+    }
+
+    private static OkHttpClient.Builder disableCertVerification(OkHttpClient.Builder builder) {
+        try {
+            final TrustManager[] trustAllCerts = new TrustManager[] {
+                    new X509TrustManager() {
+                        @Override
+                        public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType)
+                                throws CertificateException {
+                        }
+                        @Override
+                        public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType)
+                                throws CertificateException {
+                        }
+                        @Override
+                        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                            return new java.security.cert.X509Certificate[]{};
+                        }
+                    }
+            };
+            SSLContext sslContext = SSLContext.getInstance("SSL");
+            sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+            final SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+            builder.sslSocketFactory(sslSocketFactory, (X509TrustManager)trustAllCerts[0]);
+            builder.hostnameVerifier(new HostnameVerifier() {
+                @Override
+                public boolean verify(String hostname, SSLSession session) {
+                    return true;
+                }
+            });
+        } catch (Exception e) {
+
+        }
+        return builder;
     }
 
     private static class MyResponse {
@@ -58,6 +125,12 @@ public class NetworkActivity extends AppCompatActivity {
     }
 
     private class MyTask extends AsyncTask<String, Integer, MyResponse> {
+
+        private final OkHttpClient client;
+
+        public MyTask(OkHttpClient client) {
+            this.client = client;
+        }
 
         @Override
         protected MyResponse doInBackground(String... strings) {
