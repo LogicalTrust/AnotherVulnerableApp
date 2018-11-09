@@ -26,5 +26,12 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, Tapjacking2.class));
             }
         });
+
+        ((Button) findViewById(R.id.menuNetworkButton)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, NetworkActivity.class));
+            }
+        });
     }
 }
