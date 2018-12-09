@@ -33,5 +33,12 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, NetworkActivity.class));
             }
         });
+
+        ((Button) findViewById(R.id.mitdButton)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, MitdActivity.class));
+            }
+        });
     }
 }

@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -30,6 +31,10 @@
             android:exported="true" />
         <service
             android:name=".Tapjacking3Service"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name=".MitdService"
             android:enabled="true"
             android:exported="true"></service>
     </application>
