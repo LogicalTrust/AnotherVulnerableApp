@@ -1,0 +1,57 @@
+<htlm>
+    <body>
+    <script>
+     function get(path, callback) {
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4 && xhr.status == 200)
+                callback(xhr.responseText);
+        };
+        xhr.open("GET", path);
+        xhr.send();
+    }
+    (function() {
+        get("file:///data/data/org.mmm.anothervulnerableapp/files/secret.txt", function(text) {
+            document.getElementById("js_file").innerText = text;
+        });
+
+        get("file:///android_asset/secret.txt", function(text) {
+            document.getElementById("js_asset").innerText = text;
+        });
+
+        get("content:///org.mmm.anothervulnerableapp.files/secret.txt", function(text) {
+            document.getElementById("js_content").innerText = text;
+        });
+
+        get("http://192.168.0.101:8000/secret.txt", function(text) {
+            document.getElementById("js_http").innerText = text;
+        });
+
+    })();
+    </script>
+    <div>
+        <div>IMG file:///data/data/org.mmm.anothervulnerableapp/files/pumpkin.png</div>
+        <div><img src="file:///data/data/org.mmm.anothervulnerableapp/files/pumpkin.png"></div>
+    </div>
+    <div>
+        <div>IMG file:///android_asset/pumpkin.png</div>
+        <div><img src="file:///android_asset/pumpkin.png"></div>
+    </div>
+    <div>
+        <div>IMG content://org.mmm.anothervulnerableapp.files/pumpkin.png</div>
+        <div><img src="content://org.mmm.anothervulnerableapp.files/pumpkin.png"></div>
+    </div>
+    <div>
+        <div>JavaScript: file:///data/data/org.mmm.anothervulnerableapp/files/secret.txt</div>
+        <div id="js_file"></div>
+    </div>
+    <div>
+        <div>JavaScript: file:///android_asset/secret.txt</div>
+        <div id="js_asset"></div>
+    </div>
+    <div>
+        <div>JavaScript: http://192.168.0.101:8000/secret.txt</div>
+        <div id="js_http"></div>
+    </div>
+    </body>
+</htlm>

@@ -75,7 +75,10 @@ class DownloadTask extends AsyncTask<String, Integer, Boolean> {
         this.is = is;
         this.file = file;
         this.activity = activity;
+        System.out.println("asd");
     }
+
+
 
     @Override
     protected void onPreExecute() {

@@ -5,12 +5,12 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".DefaultApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:name=".DefaultApplication"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -22,7 +22,14 @@
         <activity android:name=".Tapjacking1" />
         <activity android:name=".Tapjacking2" />
         <activity android:name=".NetworkActivity" />
-        <activity android:name=".MitdActivity"></activity>
+        <activity android:name=".MitdActivity" />
+        <activity android:name=".WebViewActivity" />
+
+        <provider
+            android:name=".MyFileContentProvider"
+            android:authorities="org.mmm.anothervulnerableapp.files"
+            android:enabled="true"
+            android:exported="true"></provider>
     </application>
 
 </manifest>
