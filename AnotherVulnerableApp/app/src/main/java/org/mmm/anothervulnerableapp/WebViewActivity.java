@@ -19,9 +19,11 @@ import android.widget.CompoundButton;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -31,6 +33,21 @@ public class WebViewActivity extends AppCompatActivity {
     private WebView wv;
     private WebViewClient client;
     private String html;
+
+    private void copyAsset(String name, String destination) {
+        try {
+            InputStream is = getAssets().open(name);
+            File f = new File(destination);
+            OutputStream os = new FileOutputStream(f);
+            byte[] data = new byte[is.available()];
+            is.read(data);
+            os.write(data);
+            is.close();
+            os.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     private void writeFile(String name, String content) {
         try {
@@ -75,6 +92,7 @@ public class WebViewActivity extends AppCompatActivity {
         String secret = readAsset("secret.txt");
         writeFile("index.html", html);
         writeFile("secret.txt", secret);
+        copyAsset("pumpkin.png", "pumpkin.png");
 
         client = new WebViewClient() {
             @Override

@@ -19,7 +19,7 @@
             document.getElementById("js_asset").innerText = text;
         });
 
-        get("content:///org.mmm.anothervulnerableapp.files/secret.txt", function(text) {
+        get("content://org.mmm.anothervulnerableapp.files/secret.txt", function(text) {
             document.getElementById("js_content").innerText = text;
         });
 
@@ -48,6 +48,10 @@
     <div>
         <div>JavaScript: file:///android_asset/secret.txt</div>
         <div id="js_asset"></div>
+    </div>
+    <div>
+        <div>JavaScript: content://org.mmm.anothervulnerableapp.files/secret.txt</div>
+        <div id="js_content"></div>
     </div>
     <div>
         <div>JavaScript: http://192.168.0.101:8000/secret.txt</div>

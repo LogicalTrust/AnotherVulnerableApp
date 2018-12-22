@@ -21,7 +21,7 @@ public class MyFileContentProvider extends ContentProvider {
     @Override
     public ParcelFileDescriptor openFile(@NonNull Uri uri, @NonNull String mode) throws FileNotFoundException {
         Log.e("XXYY", uri +  " | " + uri.getPath());
-        ParcelFileDescriptor descriptor = ParcelFileDescriptor.open(new File(uri.getPath()), ParcelFileDescriptor.MODE_READ_ONLY);
+        ParcelFileDescriptor descriptor = ParcelFileDescriptor.open(new File("/data/data/org.mmm.anothervulnerableapp/files/pumpkin.png"), ParcelFileDescriptor.MODE_READ_ONLY);
         return descriptor;
     }
 
@@ -32,7 +32,7 @@ public class MyFileContentProvider extends ContentProvider {
 
     @Override
     public String getType(Uri uri) {
-        return "";
+        return "image/png";
     }
 
     @Override
